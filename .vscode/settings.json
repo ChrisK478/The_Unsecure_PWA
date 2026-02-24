@@ -2,7 +2,7 @@
   "files.autoSave": "onFocusChange",
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "editor.fontSize": 18,
+  "editor.fontSize": 12,
   "extensions.ignoreRecommendations": true,
   "terminal.integrated.defaultProfile.windows": "Git Bash",
   "window.restoreWindows": "preserve",
