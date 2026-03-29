@@ -60,8 +60,7 @@ def listFeedback():
     f.close()
 
 
-# --- 2FA helpers ---
-
+#2FA 
 
 def get_totp_secret(username):
     con = sql.connect("database_files/database.db")

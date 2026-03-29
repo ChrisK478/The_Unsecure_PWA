@@ -10,12 +10,9 @@ import qrcode
 import io
 import base64
 
-# Code snippet for logging a message
-# app.logger.critical("message")
 
 app = Flask(__name__)
-app.secret_key = "change-me"  # required for session; replace in production
-# Enable CORS to allow cross-origin requests (needed for CSRF demo in Codespaces)
+app.secret_key = "change"
 CORS(app)
 
 
@@ -79,7 +76,9 @@ def setup_2fa():
         if totp.verify(code):
             dbHandler.enable_totp(username)
             dbHandler.listFeedback()
-            return render_template("/success.html", value=username, state=True)
+            return redirect(
+                "/success.html"
+            )  # <-- this line replaces the old render_template success
         return render_template(
             "setup_2fa.html", qr=qr_data, secret=secret, error="Invalid code"
         )
