@@ -16,8 +16,12 @@
   "workbench.colorTheme": "Default Dark+",
   "workbench.iconTheme": "vscode-icons",
   "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
     "python": false,
-    "html": false,
+    "html": true,
     "css": false,
     "SQL": false
   },

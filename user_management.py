@@ -7,8 +7,8 @@ def insertUser(username, password, DoB):
     con = sql.connect("database_files/database.db")
     cur = con.cursor()
     cur.execute(
-        "INSERT INTO users (username,password,dateOfBirth) VALUES (?,?,?)",
-        (username, password, DoB),
+        "INSERT INTO users (username,password,dateOfBirth,totp_secret,totp_enabled) VALUES (?,?,?,?,?)",
+        (username, password, DoB, None, 0),
     )
     con.commit()
     con.close()
@@ -58,3 +58,42 @@ def listFeedback():
         f.write(f"{row[1]}\n")
         f.write("</p>\n")
     f.close()
+
+
+# --- 2FA helpers ---
+
+
+def get_totp_secret(username):
+    con = sql.connect("database_files/database.db")
+    cur = con.cursor()
+    cur.execute("SELECT totp_secret FROM users WHERE username = ?", (username,))
+    row = cur.fetchone()
+    con.close()
+    return row[0] if row else None
+
+
+def set_totp_secret(username, secret):
+    con = sql.connect("database_files/database.db")
+    cur = con.cursor()
+    cur.execute(
+        "UPDATE users SET totp_secret = ? WHERE username = ?", (secret, username)
+    )
+    con.commit()
+    con.close()
+
+
+def is_totp_enabled(username):
+    con = sql.connect("database_files/database.db")
+    cur = con.cursor()
+    cur.execute("SELECT totp_enabled FROM users WHERE username = ?", (username,))
+    row = cur.fetchone()
+    con.close()
+    return row and row[0] == 1
+
+
+def enable_totp(username):
+    con = sql.connect("database_files/database.db")
+    cur = con.cursor()
+    cur.execute("UPDATE users SET totp_enabled = 1 WHERE username = ?", (username,))
+    con.commit()
+    con.close()
