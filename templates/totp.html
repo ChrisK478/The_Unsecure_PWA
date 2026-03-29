@@ -1,0 +1,21 @@
+{% extends 'layout.html' %} {% block content %}
+<h1>Enter 2FA Code</h1>
+
+<form method="POST" class="box">
+  <div class="input__wrapper">
+    <input
+      type="text"
+      name="code"
+      placeholder="6-digit code"
+      class="input__field"
+      required
+    />
+  </div>
+  <div class="input__wrapper">
+    <button type="submit" class="btn">Verify</button>
+  </div>
+</form>
+
+{% if error %}
+<div>{{ error }}</div>
+{% endif %} {% endblock %}

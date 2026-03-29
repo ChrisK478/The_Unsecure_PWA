@@ -1,0 +1,26 @@
+{% extends 'layout.html' %} {% block content %}
+<h1>Set up 2FA</h1>
+
+<p>Scan this QR code in your authenticator app.</p>
+<img src="data:image/png;base64,{{ qr }}" alt="TOTP QR code" />
+
+<p>Or enter this secret manually: <strong>{{ secret }}</strong></p>
+
+<form method="POST" class="box">
+  <div class="input__wrapper">
+    <input
+      type="text"
+      name="code"
+      placeholder="6-digit code"
+      class="input__field"
+      required
+    />
+  </div>
+  <div class="input__wrapper">
+    <button type="submit" class="btn">Verify & Enable</button>
+  </div>
+</form>
+
+{% if error %}
+<div>{{ error }}</div>
+{% endif %} {% endblock %}
