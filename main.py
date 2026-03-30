@@ -164,6 +164,29 @@ def home():
         return render_template("/index.html")
 
 
+@app.after_request
+def set_security_headers(response):
+    response.headers["X-Frame-Options"] = "DENY"
+
+    # If CSP already exists, append frame-ancestors; otherwise set a full CSP.
+    csp = response.headers.get("Content-Security-Policy")
+    if csp:
+        if "frame-ancestors" not in csp:
+            csp = f"{csp}; frame-ancestors 'none'"
+            response.headers["Content-Security-Policy"] = csp
+    else:
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "img-src 'self' data:; "
+            "style-src 'self' 'unsafe-inline'; "
+            "script-src 'self'; "
+            "base-uri 'self'; "
+            "form-action 'self'; "
+            "frame-ancestors 'none'"
+        )
+    return response
+
+
 if __name__ == "__main__":
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
