@@ -27,7 +27,6 @@ def retrieveUsers(username, password):
     cur.execute("SELECT password FROM users WHERE username = ?", (username,))
     row = cur.fetchone()
 
-    # visitor log + timing kept as you have it
     with open("visitor_log.txt", "r") as file:
         number = int(file.read().strip())
         number += 1
@@ -36,13 +35,32 @@ def retrieveUsers(username, password):
 
     time.sleep(random.randint(80, 90) / 1000)
 
-    con.close()
-
     if row is None:
+        con.close()
         return False
 
-    stored_hash = row[0].encode("utf-8")
-    return bcrypt.checkpw(password.encode("utf-8"), stored_hash)
+    stored = row[0]
+
+    # bcrypt hashes start with $2a$, $2b$, or $2y$
+    if isinstance(stored, str) and stored.startswith(("$2a$", "$2b$", "$2y$")):
+        ok = bcrypt.checkpw(password.encode("utf-8"), stored.encode("utf-8"))
+        con.close()
+        return ok
+
+    # legacy plaintext fallback (one-time migration)
+    if stored == password:
+        new_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode(
+            "utf-8"
+        )
+        cur.execute(
+            "UPDATE users SET password = ? WHERE username = ?", (new_hash, username)
+        )
+        con.commit()
+        con.close()
+        return True
+
+    con.close()
+    return False
 
 
 def insertFeedback(feedback):
