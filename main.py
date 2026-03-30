@@ -56,8 +56,8 @@ def safe_redirect(target):
 @app.route("/success.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
 def addFeedback():
     if request.method == "GET" and request.args.get("url"):
-    target = request.args.get("url", "")
-    return redirect(safe_redirect(target), code=302)
+        target = request.args.get("url", "")
+        return redirect(safe_redirect(target), code=302)
     if request.method == "POST":
         feedback = request.form["feedback"]
         dbHandler.insertFeedback(feedback)
