@@ -56,8 +56,8 @@ def safe_redirect(target):
 @app.route("/success.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
 def addFeedback():
     if request.method == "GET" and request.args.get("url"):
-        url = request.args.get("url", "")
-        return redirect(url, code=302)
+    target = request.args.get("url", "")
+    return redirect(safe_redirect(target), code=302)
     if request.method == "POST":
         feedback = request.form["feedback"]
         dbHandler.insertFeedback(feedback)
@@ -75,8 +75,8 @@ def addFeedback():
 @app.route("/signup.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
 def signup():
     if request.method == "GET" and request.args.get("url"):
-        url = request.args.get("url", "")
-        return redirect(url, code=302)
+        target = request.args.get("url", "")
+        return redirect(safe_redirect(target), code=302)
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -163,8 +163,8 @@ def totp_verify():
 def home():
     # Simple Dynamic menu
     if request.method == "GET" and request.args.get("url"):
-        url = request.args.get("url", "")
-        return redirect(url, code=302)
+        target = request.args.get("url", "")
+        return redirect(safe_redirect(target), code=302)
     # Pass message to front end
     elif request.method == "GET":
         msg = request.args.get("msg", "")
