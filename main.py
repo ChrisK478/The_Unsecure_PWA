@@ -4,12 +4,15 @@ from flask import request
 from flask import redirect
 from flask import session
 from flask_cors import CORS
+from urllib.parse import urlparse
+from flask import abort, url_for
+from flask_wtf.csrf import CSRFProtect
+
 import user_management as dbHandler
 import pyotp
 import qrcode
 import io
 import base64
-from flask_wtf.csrf import CSRFProtect
 
 
 ALLOWED_ORIGINS = [
@@ -28,6 +31,26 @@ CORS(
     allow_headers=["Content-Type", "Authorization"],
     supports_credentials=True,
 )
+
+
+def safe_redirect(target):
+    if not target:
+        return url_for("home")
+    parsed = urlparse(target)
+    # block absolute URLs or protocol-relative URLs
+    if parsed.scheme or parsed.netloc or target.startswith("//"):
+        abort(400)
+    # optionally allow only specific paths
+    allowed = {
+        "/index.html",
+        "/signup.html",
+        "/success.html",
+        "/totp.html",
+        "/setup-2fa",
+    }
+    if target not in allowed:
+        abort(400)
+    return target
 
 
 @app.route("/success.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
@@ -190,4 +213,4 @@ def set_security_headers(response):
 if __name__ == "__main__":
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=False, host="127.0.0.1", port=5000)
