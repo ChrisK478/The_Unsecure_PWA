@@ -1,3 +1,5 @@
 -- database: ./database.db
 ALTER TABLE users ADD COLUMN totp_secret TEXT;
 ALTER TABLE users ADD COLUMN totp_enabled INTEGER DEFAULT 0;
+
+SELECT username, totp_enabled, totp_secret FROM users;
