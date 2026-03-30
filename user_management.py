@@ -56,14 +56,9 @@ def insertFeedback(feedback):
 def listFeedback():
     con = sql.connect("database_files/database.db")
     cur = con.cursor()
-    data = cur.execute("SELECT * FROM feedback").fetchall()
+    data = cur.execute("SELECT feedback FROM feedback").fetchall()
     con.close()
-    f = open("templates/partials/success_feedback.html", "w")
-    for row in data:
-        f.write("<p>\n")
-        f.write(f"{row[1]}\n")
-        f.write("</p>\n")
-    f.close()
+    return [row[0] for row in data]
 
 
 # 2FA
