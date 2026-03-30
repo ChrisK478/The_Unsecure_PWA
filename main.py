@@ -70,8 +70,10 @@ def setup_2fa():
 
     # If already enabled, skip setup
     if dbHandler.is_totp_enabled(username):
-        dbHandler.listFeedback()
-        return render_template("/success.html", value=username, state=True)
+        feedback_list = dbHandler.listFeedback()
+        return render_template(
+            "/success.html", value=username, state=True, feedback_list=feedback_list
+        )
 
     secret = dbHandler.get_totp_secret(username)
     if not secret:
@@ -122,8 +124,10 @@ def totp_verify():
         if totp.verify(code):
             session.pop("pending_2fa", None)
             session["user"] = pending
-            dbHandler.listFeedback()
-            return render_template("/success.html", value=pending, state=True)
+            feedback_list = dbHandler.listFeedback()
+            return render_template(
+                "/success.html", value=pending, state=True, feedback_list=feedback_list
+            )
         return render_template("totp.html", error="Invalid code")
 
     return render_template("totp.html")
