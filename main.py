@@ -9,6 +9,7 @@ import pyotp
 import qrcode
 import io
 import base64
+from flask_wtf.csrf import CSRFProtect
 
 
 ALLOWED_ORIGINS = [
@@ -19,6 +20,7 @@ ALLOWED_ORIGINS = [
 ]
 app = Flask(__name__)
 app.secret_key = "change"
+csrf = CSRFProtect(app)
 CORS(
     app,
     origins=ALLOWED_ORIGINS,

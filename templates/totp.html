@@ -2,6 +2,7 @@
 <h1>Enter 2FA Code</h1>
 
 <form method="POST" class="box">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
   <div class="input__wrapper">
     <input
       type="text"
